@@ -21,7 +21,7 @@ allprojects {
 Step 2. Add the dependency
 
 ```groovy
-implementation 'com.github.s6joui:BigEditText:1.0.0-alpha'
+implementation 'com.github.s6joui:BigEditText:1.1.0-alpha'
 ```
 ## Usage
 XML:
