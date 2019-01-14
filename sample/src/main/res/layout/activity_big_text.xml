@@ -11,6 +11,7 @@
             android:id="@+id/editText"
             android:scrollbars="vertical"
             android:padding="16dp"
+            app:hint="Enter text here"
             android:clipToPadding="false"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

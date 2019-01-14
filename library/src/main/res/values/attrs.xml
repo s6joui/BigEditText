@@ -4,5 +4,6 @@
         <attr name="textColor" format="color"/>
         <attr name="textSize" format="dimension"/>
         <attr name="text" format="string"/>
+        <attr name="hint" format="string"/>
     </declare-styleable>
 </resources>

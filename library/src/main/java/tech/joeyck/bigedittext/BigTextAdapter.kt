@@ -19,6 +19,7 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
     var textPaddingEnd : Int = 0
     var textSize : Float = BigEditText.DEFAULT_SP_TEXT_SIZE
     var textSizeUnit : Int = TypedValue.COMPLEX_UNIT_SP
+    var hint : String = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val editText = EditText(context,null,android.R.attr.editTextStyle);
@@ -27,6 +28,9 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val editText = (holder.itemView as EditText)
+        if(position == 0 && list.size == 1){
+            editText.setHint(hint)
+        }
         editText.setPadding(textPaddingStart,textPaddingTop,textPaddingEnd,textPaddingBottom)
         editText.setTextColor(textColor)
         editText.setTextSize(textSizeUnit,textSize)
