@@ -19,7 +19,7 @@ class BigTextActivity : AppCompatActivity() {
         setContentView(R.layout.activity_big_text)
 
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
-        val defaultString = "Hiya!"//getString(R.string.big_string).repeat(TEXT_REPETITIONS)
+        val defaultString = getString(R.string.big_string).repeat(TEXT_REPETITIONS)
         val string = sp.getString(TEXT_PREFERENCE,defaultString)
 
         val et = findViewById<BigEditText>(R.id.editText)
