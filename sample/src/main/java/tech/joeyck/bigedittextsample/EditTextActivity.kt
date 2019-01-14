@@ -1,5 +1,6 @@
 package tech.joeyck.bigedittextsample
 
+import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -19,8 +20,9 @@ class EditTextActivity : AppCompatActivity() {
 
         val et = findViewById<EditText>(R.id.editText)
         et.setText(string)
+        et.setTypeface(Typeface.create("serif", Typeface.NORMAL))
 
-        title = "EditText length: ${string.length} ${et.getTextSize()}px"
+        title = "EditText length: ${string.length}"
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

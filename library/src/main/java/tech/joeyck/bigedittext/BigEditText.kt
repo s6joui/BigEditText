@@ -3,8 +3,10 @@ package tech.joeyck.bigedittext
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.TypedValue
+import android.view.Gravity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -19,12 +21,12 @@ class BigEditText : RecyclerView {
     /**
      * Length to which text will be divided in to improve performance
      */
-    private var divisionLength = 3000
+    var divisionLength = 3000
 
     /**
      * Length of search for dividable characters
      */
-    private var subdivisionLength = 50
+    var subdivisionLength = 50
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -38,14 +40,21 @@ class BigEditText : RecyclerView {
 
         layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         adapter = BigTextAdapter(context)
+        isFocusable = false // Fixes recyclerView autoscrolling issue
         setText(attributes.getText(R.styleable.BigEditText_text) as String?)
         setHint(attributes.getText(R.styleable.BigEditText_hint) as String)
         setTextColor(attributes.getColor(R.styleable.BigEditText_textColor, Color.BLACK))
+        setGravity(attributes.getInt(R.styleable.BigEditText_gravity,Gravity.TOP))
         val textSize = attributes.getDimensionPixelSize(R.styleable.BigEditText_textSize, -1).toFloat();
         if (textSize < 0) setTextSize(TypedValue.COMPLEX_UNIT_SP, DEFAULT_SP_TEXT_SIZE) else setTextSize(TypedValue.COMPLEX_UNIT_PX,textSize)
         setAdapter(adapter)
 
         attributes.recycle()
+    }
+
+    override fun clearFocus(){
+        super.clearFocus()
+        adapter.clearSelection()
     }
 
     fun setText(text: String?) {
@@ -61,21 +70,48 @@ class BigEditText : RecyclerView {
         adapter.textSize = size
     }
 
-    fun getText() : String{
-        return adapter.list.joinToString("")
-    }
-
     fun setHint(hint: String){
         adapter.hint = hint
-    }
-
-    fun getTextSize(): Float{
-        return TypedValue.applyDimension(adapter.textSizeUnit,adapter.textSize,context.resources.displayMetrics)
     }
 
     fun setTypeface(typeface: Typeface){
         adapter.typeface = typeface
     }
+
+    fun setSelection(start: Int,end: Int){
+        val pos = adapter.setTextSelection(start,end,divisionLength)
+        scrollToPosition(pos)
+    }
+
+    fun setGravity(gravity: Int){
+        adapter.gravity = gravity
+    }
+
+    fun getText() : String = adapter.list.joinToString("")
+
+    fun getTextColor() : Int = adapter.textColor
+
+    fun getTextSize(): Float = TypedValue.applyDimension(adapter.textSizeUnit,adapter.textSize,context.resources.displayMetrics)
+
+    fun getHint() : String = adapter.hint
+
+    fun getTypeface() : Typeface = adapter.typeface
+
+    fun getSelectionStart() : Int = adapter.selectionStart
+
+    fun getGravity() : Int = adapter.gravity
+
+    fun addTextChangedListener(watcher: TextWatcher){
+        adapter.textWatcher = watcher
+    }
+
+    fun removeTextChangedListener(watcher: TextWatcher){
+        adapter.textWatcher = null
+    }
+
+    // =========================================== //
+    // =============== EXTENSIONS ================ //
+    // =========================================== //
 
     /**
      * Split String using substring, you'll have to tell where to split

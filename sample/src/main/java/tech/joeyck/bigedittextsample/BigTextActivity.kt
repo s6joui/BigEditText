@@ -27,7 +27,7 @@ class BigTextActivity : AppCompatActivity() {
         et.setText(string)
         et.setTypeface(Typeface.create("serif",Typeface.NORMAL))
 
-        title = "BigEditText length: ${string.length} ${et.getTextSize()}px"
+        title = "BigEditText length: ${string.length}"
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

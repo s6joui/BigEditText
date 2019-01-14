@@ -14,7 +14,9 @@
         <EditText
                 android:id="@+id/editText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:hint="Enter text here" />
 
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
