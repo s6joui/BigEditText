@@ -16,7 +16,7 @@ allprojects {
 Step 2. Add the dependency
 
 ```groovy
-compile 'com.rengwuxian.materialedittext:library:2.1.4'
+implementation 'com.github.s6joui:BigEditText:1.0.0-alpha'
 ```
 ## Usage
 XML:
