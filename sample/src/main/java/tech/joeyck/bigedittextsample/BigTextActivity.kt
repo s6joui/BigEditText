@@ -1,5 +1,6 @@
 package tech.joeyck.bigedittextsample
 
+import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -24,8 +25,9 @@ class BigTextActivity : AppCompatActivity() {
 
         val et = findViewById<BigEditText>(R.id.editText)
         et.setText(string)
+        et.setTypeface(Typeface.create("serif",Typeface.NORMAL))
 
-        title = "BigEditText length: ${string.length}"
+        title = "BigEditText length: ${string.length} ${et.getTextSize()}px"
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -2,6 +2,7 @@ package tech.joeyck.bigedittext
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.util.AttributeSet
 import android.util.TypedValue
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -66,6 +67,14 @@ class BigEditText : RecyclerView {
 
     fun setHint(hint: String){
         adapter.hint = hint
+    }
+
+    fun getTextSize(): Float{
+        return TypedValue.applyDimension(adapter.textSizeUnit,adapter.textSize,context.resources.displayMetrics)
+    }
+
+    fun setTypeface(typeface: Typeface){
+        adapter.typeface = typeface
     }
 
     /**

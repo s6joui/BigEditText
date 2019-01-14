@@ -2,6 +2,7 @@ package tech.joeyck.bigedittext
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
@@ -20,6 +21,7 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
     var textSize : Float = BigEditText.DEFAULT_SP_TEXT_SIZE
     var textSizeUnit : Int = TypedValue.COMPLEX_UNIT_SP
     var hint : String = ""
+    var typeface: Typeface = Typeface.DEFAULT
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val editText = EditText(context,null,android.R.attr.editTextStyle);
@@ -35,6 +37,7 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
         editText.setTextColor(textColor)
         editText.setTextSize(textSizeUnit,textSize)
         editText.setText(list[position])
+        editText.setTypeface(typeface)
         val watcher = object : TextWatcher{
             override fun afterTextChanged(p0: Editable?) {
             }

@@ -20,7 +20,7 @@ class EditTextActivity : AppCompatActivity() {
         val et = findViewById<EditText>(R.id.editText)
         et.setText(string)
 
-        title = "EditText length: ${string.length}"
+        title = "EditText length: ${string.length} ${et.getTextSize()}px"
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
