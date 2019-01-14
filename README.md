@@ -1,7 +1,12 @@
 # BigEditText
-Android EditText implementation that uses Recyclerview to be able to handle huge amounts of text. This is pre-release software,  **not ready for production** use.
 
 [![](https://jitpack.io/v/s6joui/BigEditText.svg)](https://jitpack.io/#s6joui/BigEditText)
+
+Android EditText implementation that uses Recyclerview to be able to handle huge amounts of text. This is pre-release software,  **not ready for production** use.
+
+<p align="center"> 
+<img src="https://i.imgur.com/6qrK6Qb.gif">
+</p>
 
 ## Download
 Step 1. Add the JitPack repository to your build file. Add it in your root build.gradle at the end of repositories:
