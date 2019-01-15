@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
+import android.view.WindowManager
 import tech.joeyck.bigedittext.BigEditText
 
 class BigTextActivity : AppCompatActivity() {
@@ -18,6 +19,8 @@ class BigTextActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_big_text)
+
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
 
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
         val defaultString = getString(R.string.big_string).repeat(TEXT_REPETITIONS)

@@ -90,6 +90,7 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
         init{
             editText.movementMethod = null
             editText.background = null
+            editText.setPadding(0,0,0,0)
             editText.setTextIsSelectable(true)
         }
 

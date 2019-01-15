@@ -11,11 +11,9 @@
             android:id="@+id/editText"
             android:scrollbars="vertical"
             android:padding="16dp"
-            app:hint="Enter text here"
-            app:gravity="center"
-            app:enabled="false"
             android:clipToPadding="false"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:hint="Enter text here" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

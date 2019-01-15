@@ -59,7 +59,7 @@ class BigEditText : RecyclerView {
     }
 
     override fun setEnabled(enabled: Boolean) {
-        adapter.enabled = false
+        adapter.enabled = enabled
     }
 
     fun setText(text: String?) {
