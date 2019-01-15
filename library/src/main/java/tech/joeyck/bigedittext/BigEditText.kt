@@ -57,6 +57,10 @@ class BigEditText : RecyclerView {
         adapter.clearSelection()
     }
 
+    override fun setEnabled(enabled: Boolean) {
+        adapter.enabled = false
+    }
+
     fun setText(text: String?) {
         adapter.setItems(text?.splitInParts(divisionLength,subdivisionLength) ?: emptyArray())
     }

@@ -26,6 +26,7 @@ class BigTextActivity : AppCompatActivity() {
         val et = findViewById<BigEditText>(R.id.editText)
         et.setText(string)
         et.setTypeface(Typeface.create("serif",Typeface.NORMAL))
+        et.isEnabled = false
 
         title = "BigEditText length: ${string.length}"
     }

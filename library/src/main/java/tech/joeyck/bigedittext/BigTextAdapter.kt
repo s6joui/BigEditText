@@ -22,13 +22,14 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
     var typeface: Typeface = Typeface.DEFAULT
     var textWatcher : TextWatcher? = null
     var gravity: Int = Gravity.TOP
+    var enabled: Boolean = true
 
     //Selection
-    var selectionEnabled = false
-    var selectionStartEditText : Int = 0
-    var selectionEndEditText : Int = 0
+    private var selectionEnabled = false
+    private var selectionStartEditText : Int = 0
+    private var selectionEndEditText : Int = 0
+    private var selectionEnd : Int = 0
     var selectionStart : Int = 0
-    var selectionEnd : Int = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val editText = EditText(context,null,android.R.attr.editTextStyle);
@@ -38,13 +39,14 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val editText = holder.editText
         if(position == 0 && list.size == 1){
-            editText.setHint(hint)
+            editText.hint = hint
         }
         editText.setTextColor(textColor)
         editText.setTextSize(textSizeUnit,textSize)
         editText.setText(list[position])
         editText.gravity = gravity
         editText.typeface = typeface
+        editText.isEnabled = enabled
 
         // Handle selection - NOT WORKING AS EXPECTED
         /*if(selectionEnabled){
