@@ -45,6 +45,7 @@ class BigEditText : RecyclerView {
         setHint(attributes.getText(R.styleable.BigEditText_hint) as String)
         setTextColor(attributes.getColor(R.styleable.BigEditText_textColor, Color.BLACK))
         setGravity(attributes.getInt(R.styleable.BigEditText_gravity,Gravity.TOP))
+        isEnabled = attributes.getBoolean(R.styleable.BigEditText_enabled,true)
         val textSize = attributes.getDimensionPixelSize(R.styleable.BigEditText_textSize, -1).toFloat();
         if (textSize < 0) setTextSize(TypedValue.COMPLEX_UNIT_SP, DEFAULT_SP_TEXT_SIZE) else setTextSize(TypedValue.COMPLEX_UNIT_PX,textSize)
         setAdapter(adapter)

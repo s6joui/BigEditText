@@ -13,6 +13,7 @@
             android:padding="16dp"
             app:hint="Enter text here"
             app:gravity="center"
+            app:enabled="false"
             android:clipToPadding="false"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
