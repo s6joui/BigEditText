@@ -9,6 +9,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
 class BigEditText : RecyclerView {
 
@@ -21,7 +22,7 @@ class BigEditText : RecyclerView {
     /**
      * Length to which text will be divided in to improve performance
      */
-    var divisionLength = 3000
+    var divisionLength = 2000
 
     /**
      * Length of search for dividable characters
@@ -38,9 +39,10 @@ class BigEditText : RecyclerView {
     private fun init(attrs: AttributeSet?){
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.BigEditText)
 
-        layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        layoutManager = StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL)
         adapter = BigTextAdapter(context)
         isFocusable = false // Fixes recyclerView autoscrolling issue
+        itemAnimator = null
         setText(attributes.getText(R.styleable.BigEditText_text) as String?)
         setHint(attributes.getText(R.styleable.BigEditText_hint) as String)
         setTextColor(attributes.getColor(R.styleable.BigEditText_textColor, Color.BLACK))
@@ -63,7 +65,11 @@ class BigEditText : RecyclerView {
     }
 
     fun setText(text: String?) {
-        adapter.setItems(text?.splitInParts(divisionLength,subdivisionLength) ?: emptyArray())
+        adapter.setItems(text?.splitInParts(divisionLength,subdivisionLength) ?: arrayOf(""))
+    }
+
+    fun setTextArray(text: Array<String>){
+        adapter.textArray = text
     }
 
     fun setTextColor(color: Int){
@@ -83,16 +89,25 @@ class BigEditText : RecyclerView {
         adapter.typeface = typeface
     }
 
-    fun setSelection(start: Int,end: Int){
-        val pos = adapter.setTextSelection(start,end,divisionLength)
+    fun setHighlight(start: Int, end: Int){
+        val pos = adapter.setHighlight(start,end)
         scrollToPosition(pos)
+    }
+
+    fun setSelectedItem(item: Int){
+        adapter.selectionEnabled = true
+        adapter.selectedItem = item
+        adapter.notifyItemChanged(item)
+        scrollToPosition(item)
     }
 
     fun setGravity(gravity: Int){
         adapter.gravity = gravity
     }
 
-    fun getText() : String = adapter.list.joinToString("")
+    fun getText() : String = adapter.textArray.joinToString("")
+
+    fun getTextArray() : Array<String> = adapter.textArray
 
     fun getTextColor() : Int = adapter.textColor
 
@@ -102,7 +117,7 @@ class BigEditText : RecyclerView {
 
     fun getTypeface() : Typeface = adapter.typeface
 
-    fun getSelectionStart() : Int = adapter.selectionStart
+    fun getSelectionStart() : Int = adapter.highlightStart
 
     fun getGravity() : Int = adapter.gravity
 
@@ -112,46 +127,6 @@ class BigEditText : RecyclerView {
 
     fun removeTextChangedListener(watcher: TextWatcher){
         adapter.textWatcher = null
-    }
-
-    // =========================================== //
-    // =============== EXTENSIONS ================ //
-    // =========================================== //
-
-    /**
-     * Split String using substring, you'll have to tell where to split
-     * @param len where to split
-     * @return array of strings
-     */
-    private fun String.splitInParts(len: Int,m: Int): Array<String?> {
-        val result = arrayOfNulls<String>(Math.ceil(this.length.toDouble() / len.toDouble()).toInt())
-        var cutStart = 0
-        for (i in result.indices){
-            var cutEnd = Math.min(this.length,(i+1)*len)
-            if(cutEnd != this.length && (cutEnd + m) < this.length){
-                val section = this.substring(cutEnd - m,cutEnd + m)
-                val index = section.indexOf(arrayListOf('.','\n',';',':','?','!'))
-                cutEnd = cutEnd - m + index + 1
-            }
-            result[i] = this.substring(cutStart, cutEnd)
-            cutStart = cutEnd
-        }
-        return result
-    }
-
-    /**
-     * Finds the first index of one of the characters passed as a parameter
-     * @param anyOfTheseChars array of chars to look for
-     * @return  the index of the first char that was found
-     */
-    private fun String.indexOf(anyOfTheseChars: ArrayList<Char>): Int{
-        for (i in 0 until this.length) {
-            val c = this[i]
-            if (anyOfTheseChars.contains(c)) {
-                return i
-            }
-        }
-        return 0
     }
 
 }

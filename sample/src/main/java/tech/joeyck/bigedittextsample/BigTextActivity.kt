@@ -27,10 +27,11 @@ class BigTextActivity : AppCompatActivity() {
         val string = sp.getString(TEXT_PREFERENCE,defaultString)
 
         val et = findViewById<BigEditText>(R.id.editText)
-        et.setText(string)
         et.setTypeface(Typeface.create("serif",Typeface.NORMAL))
+        et.setText(defaultString)
+        //et.setTextArray(arrayOf("Hola","que tal\n\n\n","wassuuuuuuuuuuupppppp","hehehe","jojojo","huashuashuas","kjhashkdasd.\nbmdbdjakbasdksdba","kjsadjkaskaskllsad"))
 
-        title = "BigEditText length: ${string.length}"
+        title = "BigEditText length: ${string?.length}"
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -40,6 +41,11 @@ class BigTextActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId){
+            R.id.highlight -> {
+                val et = findViewById<BigEditText>(R.id.editText)
+                et.setHighlight(321,3422)
+                return true
+            }
             R.id.save -> {
                 val et = findViewById<BigEditText>(R.id.editText)
                 val text = et.getText()

@@ -7,14 +7,15 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
-import kotlin.math.floor
 
 internal class BigTextAdapter(private val context : Context) : RecyclerView.Adapter<BigTextAdapter.ViewHolder>() {
 
-    var list : Array<String?> = emptyArray()
+    var textArray : Array<String> = arrayOf("")
     var textColor : Int = Color.BLACK
     var textSize : Float = BigEditText.DEFAULT_SP_TEXT_SIZE
     var textSizeUnit : Int = TypedValue.COMPLEX_UNIT_SP
@@ -25,11 +26,14 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
     var enabled: Boolean = true
 
     //Selection
-    private var selectionEnabled = false
-    private var selectionStartEditText : Int = 0
-    private var selectionEndEditText : Int = 0
-    private var selectionEnd : Int = 0
-    var selectionStart : Int = 0
+    internal var selectionEnabled = false
+    var selectedItem: Int = -1
+
+    internal var highlightEnabled = false
+    private var highlightStartEditText : Int = 0
+    private var highlightEndEditText : Int = 0
+    private var highlightEnd : Int = 0
+    var highlightStart : Int = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val editText = EditText(context,null,android.R.attr.editTextStyle);
@@ -38,28 +42,37 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val editText = holder.editText
-        if(position == 0 && list.size == 1){
+        if(position == 0 && textArray.size == 1){
             editText.hint = hint
         }
         editText.setTextColor(textColor)
         editText.setTextSize(textSizeUnit,textSize)
-        editText.setText(list[position])
+        editText.setText(textArray[position])
         editText.gravity = gravity
         editText.typeface = typeface
         editText.isEnabled = enabled
 
         // Handle selection - NOT WORKING AS EXPECTED
-        /*if(selectionEnabled){
-            if(selectionStartEditText == position && selectionEndEditText == position){
-                editText.setSelection(selectionStart,selectionEnd)
-            }else if(selectionStartEditText == position){
-                editText.setSelection(selectionStart,editText.text.length-1)
-            }else if(selectionEndEditText == position){
-                editText.setSelection(0,selectionEnd)
+        if(selectionEnabled){
+            if(selectedItem == position){
+                editText.selectAll()
+                editText.requestFocus()
             }
-        } else{
-            editText.clearFocus()
-        }*/
+        }
+
+        if(highlightEnabled){
+            if(highlightStartEditText == position && highlightEndEditText == position){
+                editText.setHighlight(highlightStart,highlightEnd)
+            }else if(highlightStartEditText == position) {
+                editText.setHighlight(highlightStart, editText.text.length - 1)
+            }else if(position > highlightStartEditText && position < highlightEndEditText){
+                editText.highlightAll()
+            }else if(highlightEndEditText == position){
+                editText.setHighlight(0,highlightEnd)
+            }
+        }
+
+        editText.setOnFocusChangeListener { view, hasFocus -> hideKeyboard(view,hasFocus) }
 
         // Handle text changes
         val watcher = object : TextWatcher{
@@ -70,7 +83,7 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
                 textWatcher?.beforeTextChanged(text,p1,p2,p3)
             }
             override fun onTextChanged(newText: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                list[position] = newText.toString()
+                textArray[position] = newText.toString()
                 textWatcher?.onTextChanged(newText,p1,p2,p3)
             }
         }
@@ -83,7 +96,7 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
         holder.recycle()
     }
 
-    override fun getItemCount(): Int = list.size
+    override fun getItemCount(): Int = textArray.size
 
     class ViewHolder(val editText: EditText) : RecyclerView.ViewHolder(editText){
 
@@ -96,28 +109,53 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
 
         fun recycle(){
             editText.removeTextChangedListener(editText.tag as TextWatcher)
+            editText.onFocusChangeListener = null
         }
 
     }
 
-    fun setItems(items : Array<String?>){
-        list = items
+    fun setItems(items : Array<String>){
+        textArray = items
         notifyDataSetChanged()
     }
 
-    fun setTextSelection(start: Int, end: Int, divisionLength: Int) : Int{
-        selectionEnabled = true
-        selectionStartEditText = floor((start/divisionLength).toDouble()).toInt()
-        selectionEndEditText = floor((end/divisionLength).toDouble()).toInt()
-        selectionStart = start - (selectionStartEditText*divisionLength)
-        selectionEnd = end - (selectionEndEditText*divisionLength)
-        notifyItemChanged(selectionStartEditText)
-        if (selectionStartEditText != selectionEndEditText) notifyItemChanged(selectionEndEditText)
-        return selectionStartEditText
+    fun setHighlight(start: Int, end: Int): Int {
+        val lengths = textArray.lengths()
+        highlightEnabled = true
+        highlightStartEditText = 0
+        highlightEndEditText = 0
+
+        while(start > lengths[highlightStartEditText] && highlightStartEditText < lengths.size){
+            highlightStartEditText++
+        }
+
+        while(end > lengths[highlightEndEditText] && highlightEndEditText < lengths.size){
+            highlightEndEditText++
+        }
+
+        highlightStart = start - if (highlightStartEditText > 0) lengths[highlightStartEditText-1] else 0
+        highlightEnd = end - if (highlightEndEditText > 0) lengths[highlightEndEditText-1] else 0
+
+        notifyItemRangeChanged(highlightStartEditText,highlightEndEditText-highlightStartEditText+1)
+
+        return highlightStartEditText
     }
 
     fun clearSelection(){
         selectionEnabled = false
+        selectedItem = -1
     }
+
+    fun clearHighlight(){
+        highlightEnabled = false
+    }
+
+    private fun hideKeyboard(view: View,hasFocus: Boolean) {
+        if(!hasFocus){
+            val imm : InputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken,0)
+        }
+    }
+
 
 }
