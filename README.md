@@ -31,5 +31,7 @@ XML:
     android:layout_height="match_parent"
     app:text="Hello World!"
     app:textSize="24sp"
-    app:textColor="#fff"/>
+    app:textColor="#fff"
+    app:hint="Enter text here..."
+    app:gravity="center" />
 ```
