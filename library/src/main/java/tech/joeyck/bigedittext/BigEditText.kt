@@ -7,7 +7,6 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
@@ -29,6 +28,12 @@ class BigEditText : RecyclerView {
      */
     var subdivisionLength = 50
 
+    /**
+     * List of chars in which it is okay to split the string ('.','\n',';',':','?','!',' ')
+     * The order determines the priority
+     */
+    var splitChars = arrayOf('\n','.',':','?','!',';',' ')
+
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
@@ -39,9 +44,9 @@ class BigEditText : RecyclerView {
     private fun init(attrs: AttributeSet?){
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.BigEditText)
 
-        layoutManager = StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL)
+        layoutManager = StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL) // StaggeredGridLayoutManager fixes recyclerView autoscrolling issue
         adapter = BigTextAdapter(context)
-        isFocusable = false // Fixes recyclerView autoscrolling issue
+        isFocusable = false
         itemAnimator = null
         setText(attributes.getText(R.styleable.BigEditText_text) as String?)
         setHint(attributes.getText(R.styleable.BigEditText_hint) as String)
@@ -65,7 +70,7 @@ class BigEditText : RecyclerView {
     }
 
     fun setText(text: String?) {
-        adapter.setItems(text?.splitInParts(divisionLength,subdivisionLength) ?: arrayOf(""))
+        adapter.setItems(text?.splitInParts(divisionLength,subdivisionLength,splitChars) ?: arrayOf(""))
     }
 
     fun setTextArray(text: Array<String>){
@@ -117,7 +122,9 @@ class BigEditText : RecyclerView {
 
     fun getTypeface() : Typeface = adapter.typeface
 
-    fun getSelectionStart() : Int = adapter.highlightStart
+    fun getHighlightStart() : Int = adapter.highlightStart
+
+    fun getHighlightEnd() : Int = adapter.highlightEnd
 
     fun getGravity() : Int = adapter.gravity
 

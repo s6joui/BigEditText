@@ -1,8 +1,6 @@
 package tech.joeyck.bigedittext
 
-import android.graphics.Color
 import android.widget.EditText
-import android.text.style.ForegroundColorSpan
 import android.text.SpannableString
 import android.text.style.BackgroundColorSpan
 
@@ -15,14 +13,14 @@ import android.text.style.BackgroundColorSpan
  * @param len where to split
  * @return array of strings
  */
-internal fun String.splitInParts(len: Int,m: Int): Array<String> {
+internal fun String.splitInParts(len: Int,m: Int,splitChars: Array<Char>): Array<String> {
     val result = arrayOfNulls<String>(Math.ceil(this.length.toDouble() / len.toDouble()).toInt())
     var cutStart = 0
     for (i in result.indices){
         var cutEnd = Math.min(this.length,(i+1)*len)
         if(cutEnd != this.length && (cutEnd + m) < this.length){
             val section = this.substring(cutEnd - m,cutEnd + m)
-            val index = section.indexOf(arrayListOf('.','\n',';',':','?','!'))
+            val index = section.indexOf(splitChars)
             cutEnd = cutEnd - m + index + 1
         }
         result[i] = this.substring(cutStart, cutEnd)
@@ -36,11 +34,12 @@ internal fun String.splitInParts(len: Int,m: Int): Array<String> {
  * @param anyOfTheseChars array of chars to look for
  * @return  the index of the first char that was found
  */
-internal fun String.indexOf(anyOfTheseChars: ArrayList<Char>): Int{
-    for (i in 0 until this.length) {
-        val c = this[i]
-        if (anyOfTheseChars.contains(c)) {
-            return i
+internal fun String.indexOf(anyOfTheseChars: Array<Char>): Int{
+    for (i in 0 until anyOfTheseChars.size) {
+        for (j in 0 until this.length) {
+            if(this[j] == anyOfTheseChars[i]){
+                return j
+            }
         }
     }
     return 0

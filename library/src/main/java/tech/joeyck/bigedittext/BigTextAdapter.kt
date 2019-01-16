@@ -25,14 +25,15 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
     var gravity: Int = Gravity.TOP
     var enabled: Boolean = true
 
-    //Selection
+    // Selection
     internal var selectionEnabled = false
     var selectedItem: Int = -1
 
+    // Highlight
     internal var highlightEnabled = false
     private var highlightStartEditText : Int = 0
     private var highlightEndEditText : Int = 0
-    private var highlightEnd : Int = 0
+    var highlightEnd : Int = 0
     var highlightStart : Int = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -52,7 +53,7 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
         editText.typeface = typeface
         editText.isEnabled = enabled
 
-        // Handle selection - NOT WORKING AS EXPECTED
+        // Handle text selection
         if(selectionEnabled){
             if(selectedItem == position){
                 editText.selectAll()
@@ -60,6 +61,7 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
             }
         }
 
+        // Handle text highlighting
         if(highlightEnabled){
             if(highlightStartEditText == position && highlightEndEditText == position){
                 editText.setHighlight(highlightStart,highlightEnd)

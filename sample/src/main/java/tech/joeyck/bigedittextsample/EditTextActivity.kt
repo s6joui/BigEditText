@@ -23,7 +23,7 @@ class EditTextActivity : AppCompatActivity() {
 
         val et = findViewById<EditText>(R.id.editText)
         et.setText(string)
-        et.setTypeface(Typeface.create("serif", Typeface.NORMAL))
+        et.typeface = Typeface.create("serif", Typeface.NORMAL)
 
         title = "EditText length: ${string.length}"
     }
