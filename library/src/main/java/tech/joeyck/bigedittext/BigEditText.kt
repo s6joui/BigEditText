@@ -63,10 +63,12 @@ class BigEditText : RecyclerView {
     override fun clearFocus(){
         super.clearFocus()
         adapter.clearSelection()
+        adapter.notifyDataSetChanged()
     }
 
     override fun setEnabled(enabled: Boolean) {
         adapter.enabled = enabled
+        adapter.notifyDataSetChanged()
     }
 
     fun setText(text: String?) {
@@ -75,15 +77,18 @@ class BigEditText : RecyclerView {
 
     fun setTextArray(text: Array<String>){
         adapter.textArray = text
+        adapter.notifyDataSetChanged()
     }
 
     fun setTextColor(color: Int){
         adapter.textColor = color
+        adapter.notifyDataSetChanged()
     }
 
     fun setTextSize(unit: Int,size: Float){
         adapter.textSizeUnit = unit
         adapter.textSize = size
+        adapter.notifyDataSetChanged()
     }
 
     fun setHint(hint: String){
@@ -92,6 +97,7 @@ class BigEditText : RecyclerView {
 
     fun setTypeface(typeface: Typeface){
         adapter.typeface = typeface
+        adapter.notifyDataSetChanged()
     }
 
     fun setHighlight(start: Int, end: Int){
@@ -108,6 +114,7 @@ class BigEditText : RecyclerView {
 
     fun setGravity(gravity: Int){
         adapter.gravity = gravity
+        adapter.notifyDataSetChanged()
     }
 
     fun getText() : String = adapter.textArray.joinToString("")
