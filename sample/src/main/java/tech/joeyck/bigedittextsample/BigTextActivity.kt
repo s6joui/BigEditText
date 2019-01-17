@@ -13,7 +13,7 @@ class BigTextActivity : AppCompatActivity() {
 
     companion object {
         const val TEXT_PREFERENCE : String = "TEXT_PREF"
-        const val TEXT_REPETITIONS : Int = 50
+        const val TEXT_REPETITIONS : Int = 10
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,8 +23,8 @@ class BigTextActivity : AppCompatActivity() {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
 
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
-        val defaultString = getString(R.string.medium_string)//.repeat(TEXT_REPETITIONS)
-        val string = sp.getString(TEXT_PREFERENCE,defaultString)
+        val defaultString = getString(R.string.medium_string).repeat(TEXT_REPETITIONS)
+        val string = sp.getString(TEXT_PREFERENCE,defaultString) ?: ""
 
         val et = findViewById<BigEditText>(R.id.editText)
         et.setTypeface(Typeface.create("serif",Typeface.NORMAL))

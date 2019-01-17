@@ -21,18 +21,23 @@ class BigEditText : RecyclerView {
     /**
      * Length to which text will be divided in to improve performance
      */
-    var divisionLength = 2000
+    var divisionSize = 2000
 
     /**
      * Length of search for dividable characters
      */
-    var subdivisionLength = 50
+    var subdivisionSize = 50
 
     /**
      * List of chars in which it is okay to split the string ('.','\n',';',':','?','!',' ')
      * The order determines the priority
      */
     var splitChars = arrayOf('\n','.',':','?','!',';',' ')
+
+    /**
+     * Text length limit in which a single EditText will be used
+     */
+    var fallbackToSingleEditTextLength = 49000
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -48,8 +53,8 @@ class BigEditText : RecyclerView {
         adapter = BigTextAdapter(context)
         isFocusable = false
         itemAnimator = null
-        setText(attributes.getText(R.styleable.BigEditText_text) as String?)
-        setHint(attributes.getText(R.styleable.BigEditText_hint) as String)
+        setText(attributes.getText(R.styleable.BigEditText_text) as String? ?: "")
+        setHint(attributes.getText(R.styleable.BigEditText_hint) as String? ?: "")
         setTextColor(attributes.getColor(R.styleable.BigEditText_textColor, Color.BLACK))
         setGravity(attributes.getInt(R.styleable.BigEditText_gravity,Gravity.TOP))
         isEnabled = attributes.getBoolean(R.styleable.BigEditText_enabled,true)
@@ -71,8 +76,16 @@ class BigEditText : RecyclerView {
         adapter.notifyDataSetChanged()
     }
 
-    fun setText(text: String?) {
-        adapter.setItems(text?.splitInParts(divisionLength,subdivisionLength,splitChars) ?: arrayOf(""))
+    fun setText(text: String) {
+        if(text.isNotEmpty()){
+            if(text.length > fallbackToSingleEditTextLength){
+                adapter.setItems(text.splitInParts(divisionSize,subdivisionSize,splitChars))
+            }else{
+                adapter.setItems(arrayOf(text))
+            }
+        }else{
+            adapter.setItems(arrayOf(""))
+        }
     }
 
     fun setTextArray(text: Array<String>){
@@ -117,11 +130,11 @@ class BigEditText : RecyclerView {
         adapter.notifyDataSetChanged()
     }
 
-    fun getText() : String = adapter.textArray.joinToString("")
+    fun getText() : String = adapter.getJoinedText()
 
     fun getTextArray() : Array<String> = adapter.textArray
 
-    fun getTextColor() : Int = adapter.textColor
+    fun getCurrentTextColor() : Int = adapter.textColor
 
     fun getTextSize(): Float = TypedValue.applyDimension(adapter.textSizeUnit,adapter.textSize,context.resources.displayMetrics)
 

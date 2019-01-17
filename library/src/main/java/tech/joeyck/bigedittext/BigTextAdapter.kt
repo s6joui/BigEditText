@@ -43,7 +43,8 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val editText = holder.editText
-        if(position == 0 && textArray.size == 1){
+        val singleEditText : Boolean = textArray.size == 1
+        if(position == 0 && singleEditText){
             editText.hint = hint
         }
         editText.setTextColor(textColor)
@@ -64,7 +65,7 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
         // Handle text highlighting
         if(highlightEnabled){
             if(highlightStartEditText == position && highlightEndEditText == position){
-                editText.setHighlight(highlightStart,highlightEnd)
+                if(singleEditText) editText.setSelection(highlightStart,highlightEnd) else editText.setHighlight(highlightStart,highlightEnd)
             }else if(highlightStartEditText == position) {
                 editText.setHighlight(highlightStart, editText.text.length - 1)
             }else if(position > highlightStartEditText && position < highlightEndEditText){
@@ -86,7 +87,7 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
             }
             override fun onTextChanged(newText: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 textArray[position] = newText.toString()
-                textWatcher?.onTextChanged(newText,p1,p2,p3)
+                textWatcher?.onTextChanged(getJoinedText(),p1,p2,p3)
             }
         }
         editText.addTextChangedListener(watcher)
@@ -119,6 +120,10 @@ internal class BigTextAdapter(private val context : Context) : RecyclerView.Adap
     fun setItems(items : Array<String>){
         textArray = items
         notifyDataSetChanged()
+    }
+
+    fun getJoinedText() : String{
+        return textArray.joinToString("")
     }
 
     fun setHighlight(start: Int, end: Int): Int {
